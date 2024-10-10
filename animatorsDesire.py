@@ -16,7 +16,7 @@ splashImage = pygame.image.load("desireCreativeLogo.png").convert()
 image_rect = splashImage.get_rect(center=(W_W // 2, W_H // 2))
 
 showSplashScreen = True
-splash_duration = 30
+splash_duration = 10
 splash_start_time = time.time()
 
 showAnimEditor = False
@@ -34,21 +34,25 @@ def brushTool(screen, color, startPos, endPos, size):
 
 running = True
 prevPos = None
+
+screen.fill((255, 255, 255))
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    mousePressed = pygame.mouse.get_pressed()
-    mousePos = pygame.mouse.get_pos()
-    
-    if mousePressed[0]:
-        if prevPos is None:
+    if not showSplashScreen:
+        mousePressed = pygame.mouse.get_pressed()
+        mousePos = pygame.mouse.get_pos()
+        
+        if mousePressed[0]:
+            if prevPos is None:
+                prevPos = mousePos
+            brushTool(screen, BRUSH_COLOR, prevPos, mousePos, BRUSH_SIZE)
             prevPos = mousePos
-        brushTool(screen, BRUSH_COLOR, prevPos, mousePos, BRUSH_SIZE)
-        prevPos = mousePos
-    else:
-        prevPos = None
+        else:
+            prevPos = None
         
     if showSplashScreen:
         current_time = time.time()
@@ -56,12 +60,11 @@ while running:
             showSplashScreen = False
             showAnimEditor = True
 
-    screen.fill((255, 255, 255))
-
     if showSplashScreen:
+        screen.fill((255, 255, 255))
         screen.blit(splashImage, image_rect)
 
     pygame.display.flip()
-    clock.tick(15)
+    clock.tick(60)
 
 pygame.quit()
